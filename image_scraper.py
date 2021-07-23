@@ -6,22 +6,27 @@ from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
 import matplotlib.image as mpim
+import re
 
-
-def img_scraper(url):
+def img_scraper(keyword):
+    keyword = keyword.replace(" ", "_")
+    url = 'https://wikipedia.org/wiki/' + keyword
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
     images = soup.findAll('img')
-
     for item in images:
-        img = mpim.imread(item['src'])
-        imgplot = plt.imshow(img)
-        plt.show()
+        # img = mpim.imread(item['src'])
+        # imgplot = plt.imshow(img)
+        # plt.show()
+        print(item['src'])
 
 
 def main():
-    url = 'https://store.steampowered.com/app/238960/Path_of_Exile/?snr=1_4_4__118'
-    img_scraper(url)
+    keyword = "Flags"
+    img_scraper(keyword)
+
+keyword = "Flags"
+main()
 
 if __name__ == '__main__':
     main()
