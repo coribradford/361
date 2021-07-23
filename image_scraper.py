@@ -1,11 +1,8 @@
 # Corinne Bradford
 # CS361 Summer 2021
 
-import pandas as pd
 from bs4 import BeautifulSoup
 import requests
-import matplotlib.pyplot as plt
-import matplotlib.image as mpim
 import re
 
 def img_scraper(keyword):
@@ -25,7 +22,6 @@ def main():
     keyword = "Flags"
     img_scraper(keyword)
 
-keyword = "Flags"
 main()
 
 if __name__ == '__main__':
