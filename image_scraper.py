@@ -14,9 +14,10 @@ images = soup.findAll('img')
 
 
 for item in images:
-    print(item['src'])
+    img = mpim.imread(item['src'])
+    imgplot = plt.imshow(img)
+    plt.show()
+    # print(item['src'])
 
-# img = mpim.imread(images[0])
-# imgplot = plt.imshow(img)
-# plt.show()
+
 # currently grabs and prints all image urls - make this useful somehow
