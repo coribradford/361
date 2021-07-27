@@ -10,14 +10,16 @@ import re
 app = Flask(__name__)
 
 def img_scraper(keyword):
+    if keyword[0].islower():
+        keyword[0] = keyword[0].upper()
     keyword = keyword.replace(" ", "_")
     url = 'https://en.wikipedia.org/wiki/' + keyword
     page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'lxml')
+    soup = BeautifulSoup(page.content, 'html.parser')
     for image in soup.findAll("img"):
-        # src = image.get('src')
-        if re.search('wikipedia/.*/thumb/', image.get('src')) and not re.search('.svg', image.get('src')):
-            return image.get('src')
+        src = image.get('src')
+        if re.search('wikipedia/.*/thumb/', src) and not re.search('.svg', src):
+            return src
     return "could not find image"
 
 @app.route('/')
@@ -29,3 +31,6 @@ def hello():
 def get_img(keyword):
     img = img_scraper(keyword)
     return img.jsonify
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000)
