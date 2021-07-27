@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
+
 def img_scraper(keyword):
     keyword = keyword.replace(" ", "_")
     url = 'https://en.wikipedia.org/wiki/' + keyword
@@ -14,12 +15,4 @@ def img_scraper(keyword):
         # src = image.get('src')
         if re.search('wikipedia/.*/thumb/', image.get('src')) and not re.search('.svg', image.get('src')):
             return image.get('src')
-
-
-def main():
-    keyword = "Flags"
-    print(img_scraper(keyword))
-
-
-if __name__ == '__main__':
-    main()
+    return "could not find image"
