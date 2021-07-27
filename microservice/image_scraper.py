@@ -24,3 +24,8 @@ def img_scraper(keyword):
 def hello():
     """Return http greeting"""
     return "Welcome to Cori's Image scraper service!"
+
+@app.route('/get_img/<keyword>')
+def get_img(keyword):
+    img = img_scraper(keyword)
+    return img.jsonify
