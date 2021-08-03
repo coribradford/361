@@ -23,7 +23,7 @@ def img_scraper(keyword):
 @app.route('/')
 def hello():
     """Return http greeting"""
-    return "Welcome to Cori's Image scraper service!"
+    return "Welcome to Cori's Image scraper service! Search for an image with '/get_img/keyword'"
 
 @app.route('/get_img/')
 def doc():
