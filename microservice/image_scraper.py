@@ -35,6 +35,3 @@ def get_img(keyword):
     """image scraper"""
     img = img_scraper(keyword)
     return jsonify(img)
-
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
