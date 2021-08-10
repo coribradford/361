@@ -25,8 +25,34 @@
 # root.mainloop()
 
 from flask import *
+import wikipedia
+from bs4 import BeautifulSoup
+import requests
+import re
+
 
 app = Flask(__name__)
+
+def wiki_scraper(keyword):
+    try:
+        summary = wikipedia.summary(keyword, auto_suggest=False, sentences=6)
+        return summary
+    except wikipedia.exceptions.PageError:
+        return "Could not find entry."
+    except wikipedia.exceptions.DisambiguationError as e:
+        return "Too many possibilities, please be more specific."
+
+def img_scraper(keyword):
+    keyword = keyword.replace(" ", "_")
+    url = 'https://en.wikipedia.org/wiki/' + keyword
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    for image in soup.findAll("img"):
+        src = image.get('src')
+        if re.search('wikipedia/.*/thumb/', src) and not re.search('.svg', src):
+            return src
+    return "could not find image"
+
 
 @app.route("/")
 def home():
@@ -36,7 +62,9 @@ def home():
 def search():
     if request.method == "POST":
         search_info = request.form["search_input"]
-        return render_template("search.html", content=search_info)
+        summary = wiki_scraper(search_info)
+        image = img_scraper(search_info)
+        return render_template("search.html", game_title=search_info, content=summary, picture=image)
     else:
         return render_template("search.html")
 

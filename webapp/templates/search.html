@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block header2 %}
     <h2>
-        {{content}}
+        {{game_title}}
     </h2>
+{% endblock %}
+{% block image %}
+    <img src="{{picture}}">
+{% endblock %}
+{% block content %}
+    <p>
+        {{content}}
+    </p>
 {% endblock %}
