@@ -34,7 +34,11 @@ def home():
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
-    return render_template("search.html")
+    if request.method == "POST":
+        search_info = request.form["search_input"]
+        return render_template("search.html", content=search_info)
+    else:
+        return render_template("search.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -58,10 +58,20 @@ body {
 </div>
 
 <div class="content">
-  <h1>Game Search Engine</h1>
+  <h1>
+      <a href="/">Game Search Engine</a>
+    </h1>
     <div class="search">
-        {% block div %}{% endblock %}
+        <form action="/search", method="POST">
+            <p>
+                <input type="text" placeholder="Search games" name="search_input" />
+                <input type="submit" value="Search" />
+            </p>
+            {% block paragraph %}{% endblock %}
+
+        </form>
     </div>
+    {% block header2 %}{% endblock %}
 </div>
 
 <div class="footer">
