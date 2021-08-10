@@ -9,6 +9,7 @@ import re
 
 app = Flask(__name__)
 
+
 def img_scraper(keyword):
     keyword = keyword.replace(" ", "_")
     url = 'https://en.wikipedia.org/wiki/' + keyword
@@ -20,15 +21,18 @@ def img_scraper(keyword):
             return src
     return "could not find image"
 
+
 @app.route('/')
 def hello():
     """Return http greeting"""
     return "Welcome to Cori's Image scraper service! Search for an image with '/get_img/keyword'"
 
+
 @app.route('/get_img/')
 def doc():
     """instructions"""
     return "search for an image with '/get_img/keyword'"
+
 
 @app.route('/get_img/<keyword>')
 def get_img(keyword):
