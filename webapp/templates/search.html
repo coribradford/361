@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 {% block header2 %}
-    {% if picture == -1 %}
-        <p>Please provide a more detailed search term.</p>
+    {% if game_title == -1 %}
+        <p>Please search for another term.</p>
     {% else %}
         <h2>{{game_title}}</h2>
     {% endif %}
 {% endblock %}
 {% block image %}
-    {% if picture == -1 %}
-        <p>[Could not find image.]</p>
+    {% if game_title == -1 %}
+        <p></p>
     {% else %}
         <img src="{{picture}}">
     {% endif %}
 {% endblock %}
 {% block content %}
-    {% if picture == -1 %}
+    {% if game_title == -1 %}
         <p></p>
     {% else %}
         <p>{{content}}</p>
