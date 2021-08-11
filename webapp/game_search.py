@@ -41,9 +41,9 @@ def wiki_scraper(keyword):
         returns = [title, summary]
         return returns
     except wikipedia.exceptions.PageError:
-        return "Could not find entry."
+        return
     except wikipedia.exceptions.DisambiguationError as e:
-        return "Too many possibilities, please be more specific."
+        return
 
 def img_scraper(keyword):
     keyword = keyword.replace(" ", "_")
@@ -66,8 +66,7 @@ def video_id_lookup(keyword):
         video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
         return video_ids[0]
     except urllib.error.HTTPError:
-        return "dQw4w9WgXcQ"
-
+        return
 
 
 @app.route("/")
