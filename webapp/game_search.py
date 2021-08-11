@@ -29,14 +29,17 @@ import wikipedia
 from bs4 import BeautifulSoup
 import requests
 import re
-
+import urllib
 
 app = Flask(__name__)
 
 def wiki_scraper(keyword):
     try:
+        length = len(keyword)
         summary = wikipedia.summary(keyword, auto_suggest=False, sentences=6)
-        return summary
+        title = summary[:length]
+        returns = [title, summary]
+        return returns
     except wikipedia.exceptions.PageError:
         return "Could not find entry."
     except wikipedia.exceptions.DisambiguationError as e:
@@ -51,7 +54,20 @@ def img_scraper(keyword):
         src = image.get('src')
         if re.search('wikipedia/.*/thumb/', src) and not re.search('.svg', src):
             return src
-    return "could not find image"
+    return -1
+
+def video_id_lookup(keyword):
+    try:
+        keyword = keyword.replace(" ", "+")
+        print(keyword)
+        keyword = keyword + "+trailer"
+        url = "https://www.youtube.com/results?search_query=" + keyword
+        html = urllib.request.urlopen(url)
+        video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
+        return video_ids[0]
+    except urllib.error.HTTPError:
+        return "dQw4w9WgXcQ"
+
 
 
 @app.route("/")
@@ -62,9 +78,13 @@ def home():
 def search():
     if request.method == "POST":
         search_info = request.form["search_input"]
-        summary = wiki_scraper(search_info)
+        output = wiki_scraper(search_info)
         image = img_scraper(search_info)
-        return render_template("search.html", game_title=search_info, content=summary, picture=image)
+        id = video_id_lookup(search_info)
+        payload = {"videoid": id}
+        response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
+        link = response.text
+        return render_template("search.html", game_title=output[0], content=output[1], picture=image, embed=link)
     else:
         return render_template("search.html")
 
