@@ -56,21 +56,26 @@ def home():
 @app.route("/search", methods=["GET", "POST"])
 def search():
     if request.method == "POST":
-        search_info = request.form["search_input"]
-        output = wiki_scraper(search_info)
-        title = output[0]
-        summary = output[1]
-        wiki_url = output[2]
-        image = img_scraper(search_info)
-        video_id = video_id_lookup(search_info)
-        payload = {"videoid": video_id}
-        response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
-        link = response.text
-        google_keyword = search_info.replace(" ", "+")
-        google_url = "https://www.google.com/search?q=" + google_keyword
-        return render_template("search.html", game_title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
+        if request.form.get("featured") == "Featured Article":
+            return render_template("check.html")
+        elif request.values == "Random Article":
+            return render_template("check.html")
+        else:
+            search_info = request.form["search_input"]
+            output = wiki_scraper(search_info)
+            title = output[0]
+            summary = output[1]
+            wiki_url = output[2]
+            image = img_scraper(title)
+            video_id = video_id_lookup(title)
+            payload = {"videoid": video_id}
+            response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
+            link = response.text
+            google_keyword = title.replace(" ", "+")
+            google_url = "https://www.google.com/search?q=" + google_keyword
+            return render_template("search.html", game_title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
     else:
-        return render_template("search.html")
+        return render_template("index.html")
 
 @app.route("/instructions")
 def instructions():

@@ -63,7 +63,7 @@ body {
       <a href="/">Search Engine</a>
     </h1>
     <div class="search">
-        <form action="/search", method="POST">
+        <form action="/search" method="POST">
             <p>
                 <input type="text" placeholder="Search games" name="search_input" />
                 <input type="submit" value="Search" />
@@ -72,6 +72,14 @@ body {
 
         </form>
     </div>
+    <div class="buttons">
+      <form action="/check" method="POST">
+        <p>
+          <input type="submit" value="Featured Article" name="featured" />
+          <input type="submit" value="Random Article" name="random" />
+        </p>
+      </form>
+  </div>
     {% block header2 %}{% endblock %}
     {% block image %}{% endblock %}
     {% block content %}{% endblock %}
