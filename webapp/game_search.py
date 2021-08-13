@@ -1,38 +1,3 @@
-
-def steam_id_lookup(keyword):
-    try:
-        steam_id = 0
-        url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
-        page = urllib.request.urlopen(url)
-        data = json.loads(page.read())
-        apps = data["applist"]["apps"]
-        for app in apps:
-            if app["name"] == keyword:
-                steam_id = app["appid"]
-        return steam_id
-    except urllib.error.HTTPError:
-        return steam_id
-
-def steam_price_lookup(app_id):
-    try:
-        steam_price = "Free to play"
-        if app_id == 0:
-            return steam_price
-        url = "https://store.steampowered.com/api/appdetails?appids=" + str(app_id)
-        page = urllib.request.urlopen(url)
-        data = json.loads(page.read())
-        app_id = str(app_id)
-        info = data[app_id]["data"]["price_overview"]
-        for stuff in info:
-            steam_price = stuff["final_formatted"]
-        return steam_price
-    except KeyError:
-        return steam_price
-    except urllib.error.HTTPError:
-        return steam_price
-
-
-
 # Corinne Bradford
 # CS361 Summer 2021
 
@@ -47,21 +12,26 @@ import json
 
 app = Flask(__name__)
 
-def wiki_scraper(keyword):
+
+def wiki_summary(keyword):
     try:
-        length = len(keyword)
         summary = wikipedia.summary(keyword, auto_suggest=False, sentences=6)
+        return summary
+    except wikipedia.exceptions.PageError or wikipedia.exceptions.DisambiguationError:
+        return -1
+
+
+def wiki_title(keyword):
+    try:
         url = 'https://en.wikipedia.org/wiki/' + keyword
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
         words =  soup.findAll("h1")
         title = words[0].text
-        returns = [title, summary, url]
-        return returns
-    except wikipedia.exceptions.PageError:
-        return [-1, -1, -1]
-    except wikipedia.exceptions.DisambiguationError:
-        return [-1, -1, -1]
+        return title, url
+    except wikipedia.exceptions.PageError or wikipedia.exceptions.DisambiguationError:
+        return -1
+
 
 def featured_wiki_title():
     today = datetime.datetime.now()
@@ -70,6 +40,7 @@ def featured_wiki_title():
     page = urllib.request.urlopen(url)
     data = json.loads(page.read())
     return data['tfa']['title']
+
 
 def random_keyword():
     return str(wikipedia.random(pages=1))
@@ -86,6 +57,7 @@ def img_scraper(keyword):
             return src
     return -1
 
+
 def video_id_lookup(keyword):
     try:
         keyword = keyword.replace(" ", "+")
@@ -96,9 +68,24 @@ def video_id_lookup(keyword):
     except urllib.error.HTTPError:
         return
 
+
+def get_info(keyword):
+    summary = wiki_summary(keyword)
+    title, url = wiki_title(keyword)
+    image = img_scraper(title)
+    video_id = video_id_lookup(title)
+    payload = {"videoid": video_id}
+    response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
+    link = response.text
+    google_keyword = title.replace(" ", "+")
+    google_url = "https://www.google.com/search?q=" + google_keyword
+    return summary, title, url, image, link, google_url
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
@@ -109,57 +96,30 @@ def search():
             return redirect(url_for(featured))
         else:
             search_info = request.form["search_input"]
-            output = wiki_scraper(search_info)
-            title = output[0]
-            summary = output[1]
-            wiki_url = output[2]
-            image = img_scraper(title)
-            video_id = video_id_lookup(title)
-            payload = {"videoid": video_id}
-            response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
-            link = response.text
-            google_keyword = title.replace(" ", "+")
-            google_url = "https://www.google.com/search?q=" + google_keyword
+            summary, title, wiki_url, image, link, google_url = get_info(search_info)
             return render_template("search.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
     else:
         return render_template("index.html")
+
 
 @app.route("/instructions")
 def instructions():
     return render_template("instructions.html")
 
+
 @app.route("/featured", methods=["GET", "POST"]) 
 def featured():
     search_info = featured_wiki_title()
-    output = wiki_scraper(search_info)
-    title = output[0]
-    summary = output[1]
-    wiki_url = output[2]
-    image = img_scraper(title)
-    video_id = video_id_lookup(title)
-    payload = {"videoid": video_id}
-    response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
-    link = response.text
-    google_keyword = title.replace(" ", "+")
-    google_url = "https://www.google.com/search?q=" + google_keyword
+    summary, title, wiki_url, image, link, google_url = get_info(search_info)
     return render_template("featured.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
+
 
 @app.route("/random", methods=["GET", "POST"]) 
 def random():
     search_info = random_keyword()
-    output = wiki_scraper(search_info)
-    title = output[0]
-    summary = output[1]
-    wiki_url = output[2]
-    image = img_scraper(title)
-    video_id = video_id_lookup(title)
-    payload = {"videoid": video_id}
-    response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
-    link = response.text
-    google_keyword = title.replace(" ", "+")
-    google_url = "https://www.google.com/search?q=" + google_keyword
+    summary, title, wiki_url, image, link, google_url = get_info(search_info)
     return render_template("random.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
-    # using debug = True for dev purposes only
+    app.run()
