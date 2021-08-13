@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import urllib
+import json
 
 app = Flask(__name__)
 
@@ -14,13 +15,17 @@ def wiki_scraper(keyword):
     try:
         length = len(keyword)
         summary = wikipedia.summary(keyword, auto_suggest=False, sentences=6)
-        title = summary[:(length+1)]
-        returns = [title, summary]
+        url = 'https://en.wikipedia.org/wiki/' + keyword
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        words =  soup.findAll("h1")
+        title = words[0].text
+        returns = [title, summary, url]
         return returns
     except wikipedia.exceptions.PageError:
-        return [-1, -1]
+        return [-1, -1, -1]
     except wikipedia.exceptions.DisambiguationError as e:
-        return [-1, -1]
+        return [-1, -1, -1]
 
 def img_scraper(keyword):
     keyword = keyword.replace(" ", "_")
@@ -35,7 +40,7 @@ def img_scraper(keyword):
 
 def video_id_lookup(keyword):
     try:
-        keyword = keyword.replace(" ", "+") + "+game+trailer"
+        keyword = keyword.replace(" ", "+")
         url = "https://www.youtube.com/results?search_query=" + keyword
         html = urllib.request.urlopen(url)
         video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
@@ -53,18 +58,15 @@ def search():
     if request.method == "POST":
         search_info = request.form["search_input"]
         output = wiki_scraper(search_info)
-        if output is not None:
-            title = output[0]
-            summary = output[1]
-        else:
-            title = "hold"
-            summary = "hold"
+        title = output[0]
+        summary = output[1]
+        url = output[2]
         image = img_scraper(search_info)
         id = video_id_lookup(search_info)
         payload = {"videoid": id}
         response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
         link = response.text
-        return render_template("search.html", game_title=title, content=summary, picture=image, embed=link)
+        return render_template("search.html", game_title=title, content=summary, wiki=url, picture=image, embed=link)
     else:
         return render_template("search.html")
 

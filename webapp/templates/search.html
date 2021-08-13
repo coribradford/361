@@ -3,7 +3,11 @@
     {% if game_title == -1 %}
         <p>Please search for another term.</p>
     {% else %}
-        <h2>{{game_title}}</h2>
+        <h2>
+            <a href="{{wiki}}">
+                {{game_title}}
+            </a>
+        </h2>
     {% endif %}
 {% endblock %}
 {% block image %}
@@ -18,9 +22,8 @@
         <p></p>
     {% else %}
         <p>{{content}}</p>
-
         <iframe width="500" height="350" src={{ embed }} title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
             gyroscope; picture-in-picture" allowfullscreen></iframe>
-{% endif %}
+    {% endif %}
 {% endblock %}
