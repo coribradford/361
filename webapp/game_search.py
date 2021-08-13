@@ -71,6 +71,9 @@ def featured_wiki_title():
     data = json.loads(page.read())
     return data['tfa']['title']
 
+def random_keyword():
+    return str(wikipedia.random(pages=1))
+
 
 def img_scraper(keyword):
     keyword = keyword.replace(" ", "_")
@@ -81,7 +84,7 @@ def img_scraper(keyword):
         src = image.get('src')
         if re.search('wikipedia/.*/thumb/', src) and not re.search('.svg', src):
             return src
-    return
+    return -1
 
 def video_id_lookup(keyword):
     try:
@@ -101,6 +104,8 @@ def home():
 def search():
     if request.method == "POST":
         if request.form.get("featured") == "Featured Article":
+            return redirect(url_for(featured))
+        if request.form.get("random") == "Random Article":
             return redirect(url_for(featured))
         else:
             search_info = request.form["search_input"]
@@ -138,6 +143,22 @@ def featured():
     google_keyword = title.replace(" ", "+")
     google_url = "https://www.google.com/search?q=" + google_keyword
     return render_template("featured.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
+
+@app.route("/random", methods=["GET", "POST"]) 
+def random():
+    search_info = random_keyword()
+    output = wiki_scraper(search_info)
+    title = output[0]
+    summary = output[1]
+    wiki_url = output[2]
+    image = img_scraper(title)
+    video_id = video_id_lookup(title)
+    payload = {"videoid": video_id}
+    response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
+    link = response.text
+    google_keyword = title.replace(" ", "+")
+    google_url = "https://www.google.com/search?q=" + google_keyword
+    return render_template("random.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
 
 if __name__ == "__main__":
     app.run(debug=True)
