@@ -60,13 +60,15 @@ def search():
         output = wiki_scraper(search_info)
         title = output[0]
         summary = output[1]
-        url = output[2]
+        wiki_url = output[2]
         image = img_scraper(search_info)
-        id = video_id_lookup(search_info)
-        payload = {"videoid": id}
+        video_id = video_id_lookup(search_info)
+        payload = {"videoid": video_id}
         response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
         link = response.text
-        return render_template("search.html", game_title=title, content=summary, wiki=url, picture=image, embed=link)
+        google_keyword = search_info.replace(" ", "+")
+        google_url = "https://www.google.com/search?q=" + google_keyword
+        return render_template("search.html", game_title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
     else:
         return render_template("search.html")
 
