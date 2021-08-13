@@ -1,4 +1,13 @@
 {% extends "base.html" %}
+{% block featured %}
+    <div class="buttons">
+        <form action="/featured" method="POST">
+        <p>
+            <input type="submit" value="Featured Article" name="featured" />
+        </p>
+        </form>
+    </div>
+{% endblock %}
 {% block paragraph %}
     <p>
         Type the topic you would like to search into the search bar to begin.

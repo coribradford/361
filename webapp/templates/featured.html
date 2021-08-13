@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block header2 %}
+    <h2>
+        <a href="{{wiki}}">
+            {{title}}
+        </a>
+    </h2>
+{% endblock %}
+{% block image %}
+    <img src="{{picture}}">
+{% endblock %}
+{% block content %}
+    <p>
+        {{content}}
+    </p>
+    <iframe width="500" height="350" src={{ embed }} title="YouTube video player" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
+        gyroscope; picture-in-picture" allowfullscreen>
+    </iframe>
+    <p>
+        <a href="{{google}}">
+            Click here to search Google
+        </a>
+    </p>
+{% endblock %}

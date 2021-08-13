@@ -1,24 +1,33 @@
 {% extends "base.html" %}
+{% block featured %}
+    <div class="buttons">
+        <form action="/featured" method="POST">
+        <p>
+            <input type="submit" value="Featured Article" name="featured" />
+        </p>
+        </form>
+    </div>
+{% endblock %}
 {% block header2 %}
-    {% if game_title == -1 %}
+    {% if title == -1 %}
         <p>Please search for another term.</p>
     {% else %}
         <h2>
             <a href="{{wiki}}">
-                {{game_title}}
+                {{title}}
             </a>
         </h2>
     {% endif %}
 {% endblock %}
 {% block image %}
-    {% if game_title == -1 %}
+    {% if title == -1 %}
         <p></p>
     {% else %}
         <img src="{{picture}}">
     {% endif %}
 {% endblock %}
 {% block content %}
-    {% if game_title == -1 %}
+    {% if title == -1 %}
         <p></p>
     {% else %}
         <p>

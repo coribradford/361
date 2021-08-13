@@ -72,14 +72,7 @@ body {
 
         </form>
     </div>
-    <div class="buttons">
-      <form action="/check" method="POST">
-        <p>
-          <input type="submit" value="Featured Article" name="featured" />
-          <input type="submit" value="Random Article" name="random" />
-        </p>
-      </form>
-  </div>
+    {% block featured %}{% endblock %}
     {% block header2 %}{% endblock %}
     {% block image %}{% endblock %}
     {% block content %}{% endblock %}
