@@ -1,15 +1,23 @@
 {% extends "base.html" %}
-{% block featured %}
-    <div class="buttons">
-        <form action="/featured" method="POST">
+{% block buttons %}
+<div class="buttons">
+    <p>
         <p>
-            <input type="submit" value="Featured Article" name="featured" />
+            <form action="/featured" method="POST">
+                <input type="submit" value="Featured Article" name="featured" />
+            </form>
         </p>
-        </form>
-    </div>
+        <p>
+            <form action="/random" method="POST">
+                <input type="submit" value="Random Article" name="random" />
+            </form>
+        </p>
+    </p>
+</div>
+
 {% endblock %}
 {% block paragraph %}
     <p>
-        Type the topic you would like to search into the search bar to begin.
+        Type the topic you would like to search into the search bar to begin, choose a random article, or peruse the featured article of the day.
     </p>
 {% endblock %}

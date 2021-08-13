@@ -1,11 +1,18 @@
 {% extends "base.html" %}
-{% block featured %}
+{% block buttons %}
     <div class="buttons">
-        <form action="/featured" method="POST">
         <p>
-            <input type="submit" value="Featured Article" name="featured" />
+            <p>
+                <form action="/featured" method="POST">
+                    <input type="submit" value="Featured Article" name="featured" />
+                </form>
+            </p>
+            <p>
+                <form action="/random" method="POST">
+                    <input type="submit" value="Random Article" name="random" />
+                </form>
+            </p>
         </p>
-        </form>
     </div>
 {% endblock %}
 {% block header2 %}

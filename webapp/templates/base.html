@@ -71,20 +71,13 @@ body {
             {% block paragraph %}{% endblock %}
 
         </form>
-    </div>
-        <div class="buttons">
-        <form action="/random" method="POST">
-            <input type="submit" value="Random Article" name="random" />
-
-        </form>
-    </div>
-    {% block featured %}{% endblock %}
+    {% block buttons %}{% endblock %}
     {% block header2 %}{% endblock %}
     {% block image %}{% endblock %}
     {% block content %}{% endblock %}
 </div>
 
-<div class="footer">
+<div class="footer" style="text-align: left;">
   <p>© 2021 Corinne Bradford</p>
 </div>
 
