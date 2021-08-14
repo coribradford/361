@@ -69,17 +69,17 @@ def video_id_lookup(keyword):
         return
 
 
-def get_info(keyword):
-    summary = wiki_summary(keyword)
-    title, url = wiki_title(keyword)
-    image = img_scraper(title)
-    video_id = video_id_lookup(title)
+def get_template_parameters(keyword):
+    wiki_summary = wiki_summary(keyword)
+    article_title, url = wiki_title(keyword)
+    wiki_image = img_scraper(article_title)
+    video_id = video_id_lookup(article_title)
     payload = {"videoid": video_id}
     response = requests.get("http://flip1.engr.oregonstate.edu:65334/embedlink", params=payload)
-    link = response.text
-    google_keyword = title.replace(" ", "+")
+    embed_video_link = response.text
+    google_keyword = article_title.replace(" ", "+")
     google_url = "https://www.google.com/search?q=" + google_keyword
-    return summary, title, url, image, link, google_url
+    return wiki_summary, article_title, url, wiki_image, embed_video_link, google_url
 
 
 @app.route("/")
@@ -96,7 +96,7 @@ def search():
             return redirect(url_for(featured))
         else:
             search_info = request.form["search_input"]
-            summary, title, wiki_url, image, link, google_url = get_info(search_info)
+            summary, title, wiki_url, image, link, google_url = get_template_parameters(search_info)
             return render_template("search.html", title=title, content=summary, 
                 wiki=wiki_url, picture=image, embed=link, google=google_url)
     else:
@@ -111,7 +111,7 @@ def instructions():
 @app.route("/featured", methods=["GET", "POST"]) 
 def featured():
     search_info = featured_wiki_title()
-    summary, title, wiki_url, image, link, google_url = get_info(search_info)
+    summary, title, wiki_url, image, link, google_url = get_template_parameters(search_info)
     return render_template("featured.html", title=title, content=summary, 
         wiki=wiki_url, picture=image, embed=link, google=google_url)
 
@@ -119,7 +119,7 @@ def featured():
 @app.route("/random", methods=["GET", "POST"]) 
 def random():
     search_info = random_keyword()
-    summary, title, wiki_url, image, link, google_url = get_info(search_info)
+    summary, title, wiki_url, image, link, google_url = get_template_parameters(search_info)
     return render_template("random.html", title=title, content=summary, 
         wiki=wiki_url, picture=image, embed=link, google=google_url)
 
