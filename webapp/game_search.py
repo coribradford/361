@@ -58,13 +58,13 @@ def img_scraper(keyword):
     return -1
 
 
-def video_id_lookup(keyword):
+def videoIdLookup(keyword):
     try:
         keyword = keyword.replace(" ", "+")
         url = "https://www.youtube.com/results?search_query=" + keyword
         html = urllib.request.urlopen(url)
-        video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
-        return video_ids[0]
+        videoIds = re.findall(r"watch\?v=(\S{11})", html.read().decode())
+        return videoIds[0]
     except urllib.error.HTTPError:
         return
 
@@ -97,7 +97,8 @@ def search():
         else:
             search_info = request.form["search_input"]
             summary, title, wiki_url, image, link, google_url = get_info(search_info)
-            return render_template("search.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
+            return render_template("search.html", title=title, content=summary, 
+                wiki=wiki_url, picture=image, embed=link, google=google_url)
     else:
         return render_template("index.html")
 
@@ -111,14 +112,16 @@ def instructions():
 def featured():
     search_info = featured_wiki_title()
     summary, title, wiki_url, image, link, google_url = get_info(search_info)
-    return render_template("featured.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
+    return render_template("featured.html", title=title, content=summary, 
+        wiki=wiki_url, picture=image, embed=link, google=google_url)
 
 
 @app.route("/random", methods=["GET", "POST"]) 
 def random():
     search_info = random_keyword()
     summary, title, wiki_url, image, link, google_url = get_info(search_info)
-    return render_template("random.html", title=title, content=summary, wiki=wiki_url, picture=image, embed=link, google=google_url)
+    return render_template("random.html", title=title, content=summary, 
+        wiki=wiki_url, picture=image, embed=link, google=google_url)
 
 
 if __name__ == "__main__":
