@@ -58,13 +58,13 @@ def img_scraper(keyword):
     return -1
 
 
-def videoIdLookup(keyword):
+def video_id_lookup(keyword):
     try:
         keyword = keyword.replace(" ", "+")
         url = "https://www.youtube.com/results?search_query=" + keyword
         html = urllib.request.urlopen(url)
-        videoIds = re.findall(r"watch\?v=(\S{11})", html.read().decode())
-        return videoIds[0]
+        video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
+        return video_ids[0]
     except urllib.error.HTTPError:
         return
 
